@@ -23,4 +23,12 @@
         android:ems="12"
         android:id="@+id/noteDetails"
         android:layout_gravity="center_horizontal"/>
+
+    <Button
+        android:background="#64FFFFFF"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save"
+        android:id="@+id/saveButton"
+        android:layout_gravity="center_horizontal"/>
 </LinearLayout>

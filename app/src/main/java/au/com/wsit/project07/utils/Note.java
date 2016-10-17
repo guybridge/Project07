@@ -1,4 +1,4 @@
-package au.com.wsit.project07;
+package au.com.wsit.project07.utils;
 
 import android.content.Context;
 

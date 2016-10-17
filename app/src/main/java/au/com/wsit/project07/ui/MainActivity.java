@@ -1,11 +1,14 @@
-package au.com.wsit.project07;
+package au.com.wsit.project07.ui;
 
 import android.app.FragmentManager;
+import android.content.DialogInterface;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+
+import au.com.wsit.project07.R;
 
 
 public class MainActivity extends AppCompatActivity
@@ -30,8 +33,7 @@ public class MainActivity extends AppCompatActivity
                 Log.i(TAG, "Add note clicked");
                 AddNoteFragment addNote = new AddNoteFragment();
                 FragmentManager fm = getFragmentManager();
-                addNote.show(fm , "AddNoteFragment");
-
+                addNote.show(fm, "AddNoteFragment");
             }
         });
 
