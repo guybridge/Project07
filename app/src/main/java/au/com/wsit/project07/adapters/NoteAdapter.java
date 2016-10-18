@@ -71,12 +71,21 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder>
             {
                 mTitle.setText(item.getmNoteTitle());
                 mDetails.setText(item.getmNoteDetails());
+                animate();
+
             }
             catch(NullPointerException e)
             {
                 Log.i(TAG, "Error binding item: " + e.getMessage());
             }
 
+        }
+
+        private void animate()
+        {
+            itemView.setScaleX(0);
+            itemView.setScaleY(0);
+            itemView.animate().scaleY(1).scaleX(1).start();
         }
     }
 }

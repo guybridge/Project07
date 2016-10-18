@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.View;
 import android.widget.Toast;
 
@@ -68,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements AddNoteFragment.L
     {
         final ArrayList<NoteItems> noteList = new ArrayList<NoteItems>();
         ParseQuery<ParseObject> query = ParseQuery.getQuery(ToDoConstants.NOTES_CLASS_NAME);
+        query.addDescendingOrder("createdAt");
         query.findInBackground(new FindCallback<ParseObject>()
         {
             @Override
