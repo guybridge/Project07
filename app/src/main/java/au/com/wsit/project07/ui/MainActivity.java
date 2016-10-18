@@ -25,6 +25,7 @@ import au.com.wsit.project07.R;
 import au.com.wsit.project07.adapters.NoteAdapter;
 import au.com.wsit.project07.utils.Note;
 import au.com.wsit.project07.utils.NoteItems;
+import au.com.wsit.project07.utils.ParseUtils;
 import au.com.wsit.project07.utils.ToDoConstants;
 
 
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements AddNoteFragment.L
     private NoteAdapter mAdapter;
     private RecyclerView mNoteRecycler;
     private RecyclerView.LayoutManager mLayout;
+    private ArrayList<NoteItems> mNoteList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -67,32 +69,20 @@ public class MainActivity extends AppCompatActivity implements AddNoteFragment.L
     // Get the notes from the Parse backend
     private void getNotes()
     {
-        final ArrayList<NoteItems> noteList = new ArrayList<NoteItems>();
-        ParseQuery<ParseObject> query = ParseQuery.getQuery(ToDoConstants.NOTES_CLASS_NAME);
-        query.addDescendingOrder("createdAt");
-        query.findInBackground(new FindCallback<ParseObject>()
-        {
-            @Override
-            public void done(List<ParseObject> objects, ParseException e)
-            {
 
-                for (ParseObject object : objects)
+                ParseUtils noteGetter = new ParseUtils();
+                noteGetter.getNote(new ParseUtils.Callback()
                 {
-                    NoteItems note = new NoteItems();
-                    note.setmNoteTitle(object.getString(ToDoConstants.NOTE_TITLE));
-                    note.setmNoteDetails(object.getString(ToDoConstants.NOTE_DETAILS));
-                    Log.i(TAG, "Title: " + object.getString(ToDoConstants.NOTE_TITLE));
-                    Log.i(TAG, "Details: " + object.getString(ToDoConstants.NOTE_DETAILS));
+                    @Override
+                    public void result(ArrayList<NoteItems> noteList)
+                    {
+                        mNoteList = noteList;
+                        // Load notes into the adapter and display
+                        mAdapter = new NoteAdapter(MainActivity.this, mNoteList);
+                        mNoteRecycler.setAdapter(mAdapter);
+                    }
+                });
 
-                    noteList.add(note);
-
-                }
-
-                mAdapter = new NoteAdapter(MainActivity.this, noteList);
-                mNoteRecycler.setAdapter(mAdapter);
-
-            }
-        });
     }
 
     private void animate()
