@@ -9,13 +9,13 @@
         android:text="Title"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:id="@+id/itemTitle"
+        android:id="@+id/itemNoteTitle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
     <TextView
         android:text="Note details..."
-        android:id="@+id/itemDetails"
+        android:id="@+id/itemNoteDetails"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

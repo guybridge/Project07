@@ -1,6 +1,8 @@
 package au.com.wsit.project07.ui;
 
+import android.app.Activity;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -24,6 +26,19 @@ public class AddNoteFragment extends DialogFragment
     private EditText mNoteTitle;
     private EditText mNoteDetails;
     private Button mSaveNote;
+    private Listener mListener;
+
+    public interface Listener
+    {
+        void result(String title, String details);
+    }
+
+    @Override
+    public void onAttach(Context context)
+    {
+        super.onAttach(context);
+        mListener = (Listener)context;
+    }
 
     @Nullable
     @Override
@@ -35,41 +50,29 @@ public class AddNoteFragment extends DialogFragment
         mNoteDetails = (EditText) rootView.findViewById(R.id.noteDetails);
         mSaveNote = (Button) rootView.findViewById(R.id.saveButton);
 
+
         mSaveNote.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
-                saveNote();
+                String noteTitle = mNoteTitle.getText().toString();
+                String noteDetails = mNoteDetails.getText().toString();
+                if(noteTitle.equals("") && noteDetails.equals(""))
+                {
+                    dismiss();
+                }
+                else
+                {
+                    mListener.result(noteTitle, noteDetails);
+                    dismiss();
+                }
+
             }
         });
-
 
         return rootView;
     }
 
-    public void saveNote()
-    {
-        String noteTitle = mNoteTitle.getText().toString();
-        String noteDetails = mNoteDetails.getText().toString();
 
-        Note note = new Note();
-        note.setmNoteTitle(noteTitle);
-        note.setmNoteDetails(noteDetails);
-        note.saveNote(new Note.Callback()
-        {
-            @Override
-            public void saved()
-            {
-                Toast.makeText(getActivity(), "Saved note", Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void saveFailed(String error)
-            {
-                Toast.makeText(getActivity(), "problem saving note", Toast.LENGTH_LONG).show();
-                Log.d(TAG, "Unable to save note: " + error);
-            }
-        });
-    }
 }
