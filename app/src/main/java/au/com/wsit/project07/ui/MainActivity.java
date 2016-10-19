@@ -24,6 +24,7 @@ import java.util.List;
 import au.com.wsit.project07.R;
 import au.com.wsit.project07.adapters.NoteAdapter;
 import au.com.wsit.project07.utils.Note;
+import au.com.wsit.project07.utils.NoteHeaderItems;
 import au.com.wsit.project07.utils.NoteItems;
 import au.com.wsit.project07.utils.ParseUtils;
 import au.com.wsit.project07.utils.ToDoConstants;
@@ -49,16 +50,15 @@ public class MainActivity extends AppCompatActivity implements AddNoteFragment.L
         mLayout = new LinearLayoutManager(MainActivity.this);
         mNoteRecycler.setLayoutManager(mLayout);
 
+
         mFab.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                animate();
-                Log.i(TAG, "Add note clicked");
-                AddNoteFragment addNote = new AddNoteFragment();
-                FragmentManager fm = getFragmentManager();
-                addNote.show(fm, "AddNoteFragment");
+                animateButton();
+                showDialogFragment();
+
             }
         });
 
@@ -66,15 +66,22 @@ public class MainActivity extends AppCompatActivity implements AddNoteFragment.L
 
     }
 
+    private void showDialogFragment()
+    {
+        AddNoteFragment addNote = new AddNoteFragment();
+        FragmentManager fm = getFragmentManager();
+        addNote.show(fm, "AddNoteFragment");
+    }
+
     // Get the notes from the Parse backend
     private void getNotes()
     {
 
-                ParseUtils noteGetter = new ParseUtils();
+                final ParseUtils noteGetter = new ParseUtils();
                 noteGetter.getNote(new ParseUtils.Callback()
                 {
                     @Override
-                    public void result(ArrayList<NoteItems> noteList)
+                    public void result(ArrayList<NoteHeaderItems> noteHeaders, ArrayList<NoteItems> noteList)
                     {
                         mNoteList = noteList;
                         // Load notes into the adapter and display
@@ -85,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements AddNoteFragment.L
 
     }
 
-    private void animate()
+    private void animateButton()
     {
         mFab.setScaleX(0);
         mFab.setScaleY(0);

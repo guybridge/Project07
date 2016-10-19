@@ -7,6 +7,19 @@ public class NoteItems
 {
     private String mNoteTitle;
     private String mNoteDetails;
+    private String mNoteID;
+
+    public String getmNoteID()
+    {
+        return mNoteID;
+    }
+
+    public void setmNoteID(String mNoteID)
+    {
+        this.mNoteID = mNoteID;
+    }
+
+
 
     public String getmNoteTitle()
     {

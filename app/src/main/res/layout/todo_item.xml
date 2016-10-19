@@ -6,7 +6,10 @@
         android:layout_height="wrap_content"
         android:layout_margin="3dp"
         card_view:cardElevation="2dp"
-        card_view:cardCornerRadius="3dp">
+        card_view:cardCornerRadius="3dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?selectableItemBackground">
 
     <LinearLayout
         android:orientation="vertical"

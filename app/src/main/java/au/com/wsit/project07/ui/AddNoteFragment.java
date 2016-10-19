@@ -1,6 +1,9 @@
 package au.com.wsit.project07.ui;
 
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.os.Bundle;
@@ -38,6 +41,27 @@ public class AddNoteFragment extends DialogFragment
     {
         super.onAttach(context);
         mListener = (Listener)context;
+    }
+
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+        anmiate();
+
+    }
+
+    private void anmiate()
+    {
+        Dialog dialog = getDialog();
+        View view = dialog.getWindow().getDecorView();
+
+        ObjectAnimator scaleDown = ObjectAnimator.ofPropertyValuesHolder(view,
+                PropertyValuesHolder.ofFloat("scaleX", 0.0f, 1.0f),
+                PropertyValuesHolder.ofFloat("scaleY", 0.0f, 1.0f),
+                PropertyValuesHolder.ofFloat("alpha", 0.0f, 1.0f));
+        scaleDown.setDuration(400);
+        scaleDown.start();
     }
 
     @Nullable
