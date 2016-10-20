@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
@@ -23,6 +24,7 @@ import java.util.List;
 
 import au.com.wsit.project07.R;
 import au.com.wsit.project07.adapters.NoteAdapter;
+import au.com.wsit.project07.adapters.SimpleItemTouchHelperCallback;
 import au.com.wsit.project07.utils.Note;
 import au.com.wsit.project07.utils.NoteHeaderItems;
 import au.com.wsit.project07.utils.NoteItems;
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements AddNoteFragment.L
 
         mFab = (FloatingActionButton) findViewById(R.id.fab);
         mNoteRecycler = (RecyclerView) findViewById(R.id.noteRecycler);
+
         mLayout = new LinearLayoutManager(MainActivity.this);
         mNoteRecycler.setLayoutManager(mLayout);
 
@@ -86,6 +89,12 @@ public class MainActivity extends AppCompatActivity implements AddNoteFragment.L
                         mNoteList = noteList;
                         // Load notes into the adapter and display
                         mAdapter = new NoteAdapter(MainActivity.this, mNoteList);
+
+                        ItemTouchHelper.Callback callback =
+                                new SimpleItemTouchHelperCallback(mAdapter);
+                        ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
+                        touchHelper.attachToRecyclerView(mNoteRecycler);
+
                         mNoteRecycler.setAdapter(mAdapter);
                     }
                 });
