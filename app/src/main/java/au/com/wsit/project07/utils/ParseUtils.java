@@ -23,13 +23,18 @@ public class ParseUtils
 
     public interface Callback
     {
-        void result(ArrayList<NoteHeaderItems> noteHeaders, ArrayList<NoteItems> noteList);
+        void result(ArrayList<NoteItems> noteList);
     }
+
+    public interface ImportantCallback
+    {
+        void result(ArrayList<NoteItems> noteList);
+    }
+
 
     public void getNote(final Callback callback)
     {
         final ArrayList<NoteItems> noteList = new ArrayList<NoteItems>();
-        final ArrayList<NoteHeaderItems> noteHeaders = new ArrayList<>();
         ParseQuery<ParseObject> query = ParseQuery.getQuery(ToDoConstants.NOTES_CLASS_NAME);
         query.addDescendingOrder("createdAt");
         query.findInBackground(new FindCallback<ParseObject>()
@@ -40,9 +45,7 @@ public class ParseUtils
 
                 for (ParseObject object : objects)
                 {
-                    // Header
-                    NoteHeaderItems noteHeader = new NoteHeaderItems();
-                    noteHeader.setmHeader(object.getCreatedAt().toString());
+
                     Log.i(TAG, "Note createdAt: " + object.getCreatedAt().toString());
 
                     // Item
@@ -50,6 +53,8 @@ public class ParseUtils
                     note.setmNoteTitle(object.getString(ToDoConstants.NOTE_TITLE));
                     note.setmNoteDetails(object.getString(ToDoConstants.NOTE_DETAILS));
                     note.setmNoteID(object.getObjectId());
+                    note.setImportant(object.getBoolean(ToDoConstants.NOTE_IMPORTANT));
+
                     Log.i(TAG, "Title: " + object.getString(ToDoConstants.NOTE_TITLE));
                     Log.i(TAG, "Details: " + object.getString(ToDoConstants.NOTE_DETAILS));
                     Log.i(TAG, "Note ID: " + object.getObjectId());
@@ -57,9 +62,47 @@ public class ParseUtils
                     noteList.add(note);
                 }
 
-                callback.result(noteHeaders, noteList);
+                callback.result(noteList);
             }
         });
     }
+
+    public void showImportant(final ImportantCallback callback)
+    {
+        final ArrayList<NoteItems> noteList = new ArrayList<NoteItems>();
+        ParseQuery<ParseObject> query = ParseQuery.getQuery(ToDoConstants.NOTES_CLASS_NAME);
+        query.whereEqualTo(ToDoConstants.NOTE_IMPORTANT, true);
+        query.findInBackground(new FindCallback<ParseObject>()
+        {
+            @Override
+            public void done(List<ParseObject> objects, ParseException e)
+            {
+                if (e == null)
+                {
+                    for (ParseObject object : objects)
+                    {
+                        // Item
+                        NoteItems note = new NoteItems();
+                        note.setmNoteTitle(object.getString(ToDoConstants.NOTE_TITLE));
+                        note.setmNoteDetails(object.getString(ToDoConstants.NOTE_DETAILS));
+                        note.setmNoteID(object.getObjectId());
+                        note.setImportant(object.getBoolean(ToDoConstants.NOTE_IMPORTANT));
+
+                        Log.i(TAG, "IMPORTANT: Title: " + object.getString(ToDoConstants.NOTE_TITLE));
+                        Log.i(TAG, "IMPORTANT: Details: " + object.getString(ToDoConstants.NOTE_DETAILS));
+                        Log.i(TAG, "IMPORTANT: Note ID: " + object.getObjectId());
+
+                        noteList.add(note);
+                    }
+
+                    callback.result(noteList);
+                }
+            }
+        });
+
+    }
+
+
+
 
 }

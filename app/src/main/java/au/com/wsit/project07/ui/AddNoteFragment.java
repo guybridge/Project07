@@ -13,7 +13,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import au.com.wsit.project07.utils.Note;
@@ -30,10 +33,13 @@ public class AddNoteFragment extends DialogFragment
     private EditText mNoteDetails;
     private Button mSaveNote;
     private Listener mListener;
+    private ImageView mImportant;
+    private CheckBox mImportantCheckBox;
+    private boolean isImportant = false;
 
     public interface Listener
     {
-        void result(String title, String details);
+        void result(String title, String details, boolean isImportant);
     }
 
     @Override
@@ -73,8 +79,27 @@ public class AddNoteFragment extends DialogFragment
         mNoteTitle = (EditText) rootView.findViewById(R.id.noteTitle);
         mNoteDetails = (EditText) rootView.findViewById(R.id.noteDetails);
         mSaveNote = (Button) rootView.findViewById(R.id.saveButton);
+        mImportant = (ImageView) rootView.findViewById(R.id.importantImageView);
+        mImportantCheckBox = (CheckBox) rootView.findViewById(R.id.importantCheckBox);
 
 
+        // Checkbox listener
+        mImportantCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b)
+            {
+                // Animate the ImageView
+                mImportant.setScaleX(0);
+                mImportant.setScaleY(0);
+                mImportant.animate().scaleX(1).scaleY(1).start();
+
+                Log.i(TAG, "The checkbox is: " + b);
+                isImportant = b;
+            }
+        });
+
+        // Save note listener
         mSaveNote.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -88,7 +113,7 @@ public class AddNoteFragment extends DialogFragment
                 }
                 else
                 {
-                    mListener.result(noteTitle, noteDetails);
+                    mListener.result(noteTitle, noteDetails, isImportant);
                     dismiss();
                 }
 

@@ -14,7 +14,20 @@ public class Note
 
     private String mNoteTitle;
     private String mNoteDetails;
+    private boolean isImportant;
     private Context mContext;
+
+    public boolean getIsImportant()
+    {
+        return isImportant;
+    }
+
+    public void setIsImportant(boolean isImportant)
+    {
+        this.isImportant = isImportant;
+    }
+
+
 
     public interface Callback
     {
@@ -47,6 +60,7 @@ public class Note
         ParseObject note = new ParseObject(ToDoConstants.NOTES_CLASS_NAME);
         note.put(ToDoConstants.NOTE_TITLE, mNoteTitle);
         note.put(ToDoConstants.NOTE_DETAILS, mNoteDetails);
+        note.put(ToDoConstants.NOTE_IMPORTANT, isImportant);
         note.saveInBackground(new SaveCallback()
         {
             @Override

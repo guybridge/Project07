@@ -9,7 +9,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.parse.ParseAnonymousUtils;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -54,6 +57,16 @@ public class NoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         ViewHolder vhItem = (ViewHolder)holder;
         vhItem.mTitle.setText(mNoteItems.get(position).getmNoteTitle());
         vhItem.mDetails.setText(mNoteItems.get(position).getmNoteDetails());
+
+        if(mNoteItems.get(position).isImportant())
+        {
+            vhItem.mImportant.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            vhItem.mImportant.setVisibility(View.GONE);
+        }
+
 
         animateItem(vhItem.itemView);
 
@@ -115,6 +128,7 @@ public class NoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
             for (int i = fromPosition; i < toPosition; i++)
             {
                 Collections.swap(mNoteItems, i, i + 1);
+
             }
         }
         else
@@ -143,12 +157,14 @@ public class NoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
     {
         private TextView mTitle;
         private TextView mDetails;
+        private ImageView mImportant;
 
         public ViewHolder(View itemView)
         {
             super(itemView);
             mTitle = (TextView) itemView.findViewById(R.id.itemNoteTitle);
             mDetails = (TextView) itemView.findViewById(R.id.itemNoteDetails);
+            mImportant = (ImageView) itemView.findViewById(R.id.importantImageView);
 
         }
 

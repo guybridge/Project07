@@ -1,38 +1,29 @@
 package au.com.wsit.project07.ui;
 
 import android.app.FragmentManager;
-import android.content.DialogInterface;
-import android.provider.SyncStateContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
-import android.view.DragEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.parse.FindCallback;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
-
 import java.util.ArrayList;
-import java.util.List;
 
 import au.com.wsit.project07.R;
 import au.com.wsit.project07.adapters.NoteAdapter;
 import au.com.wsit.project07.adapters.SimpleItemTouchHelperCallback;
 import au.com.wsit.project07.utils.Note;
-import au.com.wsit.project07.utils.NoteHeaderItems;
 import au.com.wsit.project07.utils.NoteItems;
 import au.com.wsit.project07.utils.ParseUtils;
 import au.com.wsit.project07.utils.ToDoConstants;
 
 
-public class MainActivity extends AppCompatActivity implements AddNoteFragment.Listener
+public class MainActivity extends AppCompatActivity implements AddNoteFragment.Listener, SortFragment.SortCallback
 {
     public static final String TAG = MainActivity.class.getSimpleName();
     private FloatingActionButton mFab;
@@ -69,12 +60,7 @@ public class MainActivity extends AppCompatActivity implements AddNoteFragment.L
 
     }
 
-    private void showDialogFragment()
-    {
-        AddNoteFragment addNote = new AddNoteFragment();
-        FragmentManager fm = getFragmentManager();
-        addNote.show(fm, "AddNoteFragment");
-    }
+
 
     // Get the notes from the Parse backend
     private void getNotes()
@@ -84,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements AddNoteFragment.L
                 noteGetter.getNote(new ParseUtils.Callback()
                 {
                     @Override
-                    public void result(ArrayList<NoteHeaderItems> noteHeaders, ArrayList<NoteItems> noteList)
+                    public void result(ArrayList<NoteItems> noteList)
                     {
                         mNoteList = noteList;
                         // Load notes into the adapter and display
@@ -110,11 +96,12 @@ public class MainActivity extends AppCompatActivity implements AddNoteFragment.L
 
     // Result from dialog
     @Override
-    public void result(String title, String details)
+    public void result(String title, String details, boolean isImportant)
     {
         Note note = new Note();
         note.setmNoteTitle(title);
         note.setmNoteDetails(details);
+        note.setIsImportant(isImportant);
         note.saveNote(new Note.Callback()
         {
             @Override
@@ -130,5 +117,79 @@ public class MainActivity extends AppCompatActivity implements AddNoteFragment.L
                 Toast.makeText(MainActivity.this, "Problem saving", Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        int id = item.getItemId();
+
+        switch (id)
+        {
+            case R.id.action_sort:
+                // Sort dialog
+                showSortDialog();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void showDialogFragment()
+    {
+        AddNoteFragment addNote = new AddNoteFragment();
+        FragmentManager fm = getFragmentManager();
+        addNote.show(fm, "AddNoteFragment");
+    }
+
+    private void showSortDialog()
+    {
+        FragmentManager fm = getFragmentManager();
+        SortFragment sortFragment = new SortFragment();
+        sortFragment.show(fm, "SortFragment");
+    }
+
+    // Callback from sort fragment
+    @Override
+    public void sortType(String type)
+    {
+        // Get the type selected and sort by that
+       if(type.equals(ToDoConstants.DATE))
+       {
+           // Sort by date
+           getNotes();
+       }
+       else if(type.equals(ToDoConstants.ALPHABETICALLY))
+       {
+           // Sort A-Z
+       }
+        else if(type.equals(ToDoConstants.IMPORTANCE))
+       {
+           // Sort by importance
+           ParseUtils showImportant = new ParseUtils();
+           showImportant.showImportant(new ParseUtils.ImportantCallback()
+           {
+               @Override
+               public void result(ArrayList<NoteItems> noteList)
+               {
+                   mNoteList = noteList;
+                   // Load notes into the adapter and display
+                   mAdapter = new NoteAdapter(MainActivity.this, mNoteList);
+
+                   ItemTouchHelper.Callback callback =
+                           new SimpleItemTouchHelperCallback(mAdapter);
+                   ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
+                   touchHelper.attachToRecyclerView(mNoteRecycler);
+
+                   mNoteRecycler.setAdapter(mAdapter);
+               }
+           });
+       }
     }
 }

@@ -8,6 +8,19 @@ public class NoteItems
     private String mNoteTitle;
     private String mNoteDetails;
     private String mNoteID;
+    private boolean isImportant;
+
+    public boolean isImportant()
+    {
+        return isImportant;
+    }
+
+    public void setImportant(boolean important)
+    {
+        isImportant = important;
+    }
+
+
 
     public String getmNoteID()
     {
